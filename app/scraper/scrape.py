@@ -1,3 +1,4 @@
+import pprint
 import requests
 from bs4 import BeautifulSoup
 from utils import clean_movie_title, movies_search, get_movie_genres_by_id, find_best_match
@@ -17,14 +18,15 @@ for li in soup.select('ul.Sessions > li[data-name]'):
     title = li['data-name']
     title = clean_movie_title(title)
     times = [span.text for span in li.select('a > span.Time')]
-    if title in movies_dict:
-        movies_dict[title].extend(times)
-    else:
-        movies_dict[title] = times
+
+    if title not in movies_dict:
+        movies_dict[title] = {'times': [], 'genres': []}
+
+    movies_dict[title]['times'].extend(times)
 
 print(f"found {len(movies_dict)} unique movie titles")
 
-for title, times in movies_dict.items():
+for title, movie_info in movies_dict.items():
     print(f"processing movie: {title}")
     details = movies_search(title)
     candidates = details.get('results', [])
@@ -34,15 +36,16 @@ for title, times in movies_dict.items():
     if candidate_titles:
         best_match_title = find_best_match(title, candidate_titles)
         best_match_object = candidate_map.get(best_match_title)
-        print(f"best match for {title} is {best_match_title}")
 
         if best_match_object:
             movie_id = best_match_object.get('id')
-            genres, title = get_movie_genres_by_id(movie_id)
+            api_genres, api_title = get_movie_genres_by_id(movie_id)
 
-            if genres:
-                print(f"genres for {title}: {genres}")
+            if api_genres:
+                movies_dict[clean_movie_title(title)]['genres'] = api_genres
     else:
         print(f"no matching candidates found for {title}")
+
+print(dict(filter(lambda movie: "Action" in movie[1]['genres'], movies_dict.items())))
 
 print("scraper finished successfully")

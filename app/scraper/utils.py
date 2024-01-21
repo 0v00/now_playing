@@ -31,7 +31,6 @@ def get_movie_genres_by_id(movie_id):
         data = response.json()
         genres = [genre['name'] for genre in data.get('genres', [])]
         title = data.get('title', 'Unknown')
-        print(f"genres for {title}: {genres}")
         return genres, title
     except requests.RequestException as e:
         print(f"an error occurred: {e}")
@@ -78,8 +77,8 @@ def find_best_match(title, candidates):
     smallest_distance = float('inf')
     title = title.lower()
     for candidate in candidates:
-        candidate = candidate.lower()
-        if title == candidate:
+        candidate_lower = candidate.lower()
+        if title == candidate_lower:
             best_match = candidate
             return best_match
         print(f"computing levenshtein distance for {title} and {candidate}")
