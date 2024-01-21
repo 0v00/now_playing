@@ -1,4 +1,3 @@
-import pprint
 import requests
 from bs4 import BeautifulSoup
 from utils import clean_movie_title, movies_search, get_movie_genres_by_id, find_best_match
@@ -47,5 +46,6 @@ for title, movie_info in movies_dict.items():
         print(f"no matching candidates found for {title}")
 
 print(dict(filter(lambda movie: "Action" in movie[1]['genres'], movies_dict.items())))
+print(movies_dict)
 
 print("scraper finished successfully")
