@@ -1,5 +1,5 @@
 import os
-import requests
+import aiohttp
 from urllib.parse import quote
 
 tmdb_url = os.getenv("TMDB_URL")
@@ -12,27 +12,27 @@ def clean_movie_title(title, substrings=None):
         title = title.replace(substring, '')
     return title
 
-def movies_search(movie_title):
+async def movies_search(session, movie_title):
     uri_encoded_title = quote(movie_title)
     search_url = f"{tmdb_url}/3/search/movie?api_key={api_key}&query={uri_encoded_title}&include_adult=false&language=en-US&page=1"
     try:
-        response = requests.get(search_url)
-        response.raise_for_status()
-        return response.json()
-    except requests.RequestException as e:
+        async with session.get(search_url) as response:
+            response.raise_for_status()
+            return await response.json()
+    except aiohttp.ClientError as e:
         print(f"an error occurred: {e}")
         return None
     
-def get_movie_genres_by_id(movie_id):
+async def get_movie_genres_by_id(session, movie_id):
     search_url = f"{tmdb_url}/3/movie/{movie_id}?api_key={api_key}&language=en-US"
     try:
-        response = requests.get(search_url)
-        response.raise_for_status()
-        data = response.json()
-        genres = [genre['name'] for genre in data.get('genres', [])]
-        title = data.get('title', 'Unknown')
-        return genres, title
-    except requests.RequestException as e:
+        async with session.get(search_url) as response:
+            response.raise_for_status()
+            data = await response.json()
+            genres = [genre['name'] for genre in data.get('genres', [])]
+            title = data.get('title', 'Unknown')
+            return genres, title
+    except aiohttp.ClientError as e:
         print(f"an error occurred: {e}")
         return None
     
