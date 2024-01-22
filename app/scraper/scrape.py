@@ -1,34 +1,33 @@
-import requests
+import asyncio
+import aiohttp
 from bs4 import BeautifulSoup
 from utils import clean_movie_title, movies_search, get_movie_genres_by_id, find_best_match
 from dotenv import load_dotenv
 load_dotenv()
 
-print('starting scraper...')
+async def scrape_movie_titles_times(session, url):
+    async with session.get(url) as response:
+        soup = BeautifulSoup(await response.text(), 'html.parser')
+    
+    movies_dict = {}
+    for li in soup.select('ul.Sessions > li[data-name]'):
+        title = li['data-name']
+        title = clean_movie_title(title)
+        times = [span.text for span in li.select('a > span.Time')]
 
-url = 'https://www.ritzcinemas.com.au/now-showing'
-response = requests.get(url)
-soup = BeautifulSoup(response.content, 'html.parser')
+        if title not in movies_dict:
+            movies_dict[title] = {'times': [], 'genres': []}
+        movies_dict[title]['times'].extend(times)
+    
+    return movies_dict
 
-print('scraping movie titles and times...')
-
-movies_dict = {}
-for li in soup.select('ul.Sessions > li[data-name]'):
-    title = li['data-name']
-    title = clean_movie_title(title)
-    times = [span.text for span in li.select('a > span.Time')]
-
-    if title not in movies_dict:
-        movies_dict[title] = {'times': [], 'genres': []}
-
-    movies_dict[title]['times'].extend(times)
-
-print(f"found {len(movies_dict)} unique movie titles")
-
-for title, _ in movies_dict.items():
+async def process_movie(session, title, movies_dict):
     print(f"processing movie: {title}")
-    details = movies_search(title)
-    candidates = details.get('results', [])
+    movie_details = await movies_search(session, title)
+    if not movie_details:
+        return
+    
+    candidates = movie_details.get('results', [])
     candidate_map = {result['title']: result for result in candidates}
     candidate_titles = list(candidate_map.keys())
 
@@ -38,14 +37,26 @@ for title, _ in movies_dict.items():
 
         if best_match_object:
             movie_id = best_match_object.get('id')
-            api_genres, api_title = get_movie_genres_by_id(movie_id)
+            api_genres, _ = await get_movie_genres_by_id(session, movie_id)
 
             if api_genres:
                 movies_dict[clean_movie_title(title)]['genres'] = api_genres
+
     else:
         print(f"no matching candidates found for {title}")
 
-print(dict(filter(lambda movie: "Action" in movie[1]['genres'], movies_dict.items())))
-print(movies_dict)
+async def main():
+    print('starting scraper...')
+    url = 'https://www.ritzcinemas.com.au/now-showing'
 
-print("scraper finished successfully")
+    async with aiohttp.ClientSession() as session:
+        movies_dict = await scrape_movie_titles_times(session, url)
+        print(f"found {len(movies_dict)} unique movie titles")
+
+        await asyncio.gather(*(process_movie(session, title, movies_dict) for title in movies_dict.keys()))
+
+    print(dict(filter(lambda movie: "Action" in movie[1]['genres'], movies_dict.items())))
+    print(movies_dict)
+    print("scraper finished successfully")
+
+asyncio.run(main())
