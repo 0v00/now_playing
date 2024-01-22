@@ -25,7 +25,7 @@ for li in soup.select('ul.Sessions > li[data-name]'):
 
 print(f"found {len(movies_dict)} unique movie titles")
 
-for title, movie_info in movies_dict.items():
+for title, _ in movies_dict.items():
     print(f"processing movie: {title}")
     details = movies_search(title)
     candidates = details.get('results', [])
