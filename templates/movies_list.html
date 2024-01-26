@@ -1,0 +1,5 @@
+<ul>
+    {% for title, details in movies.items() %}
+        <li>{{ title }} - Times: {{ details['times'] | join(', ') }}</li>
+    {% endfor %}
+</ul>
