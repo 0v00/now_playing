@@ -1,14 +1,19 @@
 ## now playing
 
-Scraping today's movies from my local movie theatre so I don't have to actually browse their website.
+Scraping today's movies from my local movie theatre so I can avoid any potential popups/notifications/etc.
 
-I use TMDB's API to get more information about each movie - and sometimes I use the Levenshtein distance to help find the closest match from TMDB's API. [Read more here](https://0v00.io/websites-as-non-places-scraping-and-the-levenshtein-distance/).
+- BeautifulSoup4 for scraping
+- TMDB's API to get movie details like genre
+- Occasionally using the Levenshtein distance algorithm to match movie titles - [(read more here)](https://0v00.io/websites-as-non-places-scraping-and-the-levenshtein-distance/)
+- Deliver HTML over the wire using Jinja2 for template rendering and HTMX for dynamic content updates
+- A simple brutalist design style
 
 ## how to run
-
-Unless you go to The Ritz cinema, I don't see why you would use this.
 
 1. `python3 -m venv myvenv`
 2. `source myvenv/bin/activate`
 3. `pip3 install -r requirements.txt`
-4. `python3 app/scraper/scrape.py`
+4. `uvicorn app.main:app --reload`
+5. go to `http://localhost:8000/`
+
+![screenshot](/screenshot.png)
