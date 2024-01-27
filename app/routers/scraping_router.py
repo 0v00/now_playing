@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.templating import Jinja2Templates
-from app.scraper.new_scrape import scrape_movies
+from app.scraper.scrape import scrape_movies
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
