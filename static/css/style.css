@@ -1,3 +1,19 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Helvetica', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fa9442;
+    color: #1b3644;
+}
+
+body {
+    min-height: 100vh;
+}
+
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -5,4 +21,20 @@
   
 .fade-in {
     animation: fadeIn 2s ease-in forwards;
-}  
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    transform: rotate(-10deg);
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+.movie-title {
+    font-weight: bold;
+    font-size: larger;
+}
