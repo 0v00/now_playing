@@ -7,7 +7,7 @@ Scraping today's movies from my local movie theatre so I can avoid any potential
 - occasionally using the Levenshtein distance algorithm to match movie titles - [(read more here)](https://0v00.io/websites-as-non-places-scraping-and-the-levenshtein-distance/)
 - store movie info in an sqlite db
 - send HTML over the wire using Jinja2 for template rendering and HTMX for dynamic content updates
-- a simple brutalist design style
+- a minimalist/neo-brutalist design style
 
 ## how to run
 
