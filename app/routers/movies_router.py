@@ -9,6 +9,7 @@ templates = Jinja2Templates(directory="templates")
 async def get_movies(request: Request):
     try:
         movies_data = get_movies_with_showtimes()
+        print("Movies Data:", movies_data)
         return templates.TemplateResponse("movies_list.html", {"request": request, "movies": movies_data})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

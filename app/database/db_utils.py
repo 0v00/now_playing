@@ -48,10 +48,12 @@ def insert_showtimes(movie_id, times):
     conn.close()
 
 def get_movies_with_showtimes():
-    conn = sqlite3.connect("app/database/movies.db")
+    DATABASE_PATH = "app/database/movies.db"
+    conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
 
     today = datetime.now().date().isoformat()
+    current_datetime = datetime.now()
 
     query = """
     SELECT m.title, s.times
@@ -64,7 +66,6 @@ def get_movies_with_showtimes():
     rows = cursor.fetchall()
     conn.close()
 
-    current_datetime = datetime.now()
     movies_data = {}
 
     for title, times_str in rows:
@@ -76,10 +77,9 @@ def get_movies_with_showtimes():
             try:
                 showtime = datetime.strptime(f"{today} {time_str.strip()}", '%Y-%m-%d %I:%M %p')
                 is_past = showtime < current_datetime
+                movies_data[title]['times'].append({"time": time_str, "is_past": is_past})
             except ValueError as e:
                 print(f"Error parsing time: {time_str} for movie {title}. Error: {e}")
-                continue 
-
-            movies_data[title]['times'].append({"time": time_str, "is_past": is_past})
+                continue
 
     return movies_data
