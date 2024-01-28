@@ -4,9 +4,11 @@ Scraping today's movies from my local movie theatre so I can avoid any potential
 
 - BeautifulSoup4 for scraping
 - TMDB's API to get movie details like genre
-- occasionally using the Levenshtein distance algorithm to match movie titles - [(read more here)](https://0v00.io/websites-as-non-places-scraping-and-the-levenshtein-distance/)
+- occasionally use the Levenshtein distance algorithm to match movie titles - [(read more here)](https://0v00.io/websites-as-non-places-scraping-and-the-levenshtein-distance/)
 - store movie info in an sqlite db
 - send HTML over the wire using Jinja2 for template rendering and HTMX for dynamic content updates
+- use HTMX to poll `/get-movies` every 10 minutes and then update the `innerHTML` with `hx-swap`
+- if a movie has already started, we add `line-through` styling to that showtime
 - a minimalist/neo-brutalist design style
 
 ## how to run
@@ -20,3 +22,4 @@ Scraping today's movies from my local movie theatre so I can avoid any potential
 5. go to `http://localhost:8000/`
 
 ![screenshot](/screenshot.png)
+![screenshot](/screenshot2.png)
