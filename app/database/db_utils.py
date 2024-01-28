@@ -64,10 +64,22 @@ def get_movies_with_showtimes():
     rows = cursor.fetchall()
     conn.close()
 
+    current_datetime = datetime.now()
     movies_data = {}
-    for title, time in rows:
+
+    for title, times_str in rows:
         if title not in movies_data:
             movies_data[title] = {'times': []}
-        movies_data[title]['times'].append(time)
+
+        times = times_str.split(',')
+        for time_str in times:
+            try:
+                showtime = datetime.strptime(f"{today} {time_str.strip()}", '%Y-%m-%d %I:%M %p')
+                is_past = showtime < current_datetime
+            except ValueError as e:
+                print(f"Error parsing time: {time_str} for movie {title}. Error: {e}")
+                continue 
+
+            movies_data[title]['times'].append({"time": time_str, "is_past": is_past})
 
     return movies_data

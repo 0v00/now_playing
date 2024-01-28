@@ -2,7 +2,14 @@
     {% if movies %}
         {% for title, details in movies.items() %}
             <li class="fade-in">
-                <span class="movie-title">{{ title }}:</span> {{ details['times'] | join(', ') }}
+                <span class="movie-title">{{ title }}:</span> 
+                {% for time in details.times %}
+                    {% if time.is_past %}
+                        <span class="time-past">{{ time.time }}</span>
+                    {% else %}
+                        <span>{{ time.time }}</span>
+                    {% endif %}
+                {% endfor %}
             </li>
         {% endfor %}
     {% else %}

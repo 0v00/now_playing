@@ -38,3 +38,7 @@ li {
     font-weight: bold;
     font-size: larger;
 }
+
+.time-past {
+    text-decoration: line-through;
+}
