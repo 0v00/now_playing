@@ -3,8 +3,8 @@ import aiohttp
 import json
 from bs4 import BeautifulSoup
 from datetime import datetime
-from ..database.db_utils import movie_exists, get_last_scraped_date, insert_or_update_movie, insert_showtimes
-from .utils import clean_movie_title, movies_search, get_movie_genres_by_id, get_movie_keywords, find_best_match
+from app.database.db_utils import movie_exists, get_last_scraped_date, insert_or_update_movie, insert_showtimes
+from app.scraper.utils import clean_movie_title, movies_search, get_movie_genres_by_id, get_movie_keywords, find_best_match
 from dotenv import load_dotenv
 
 load_dotenv()

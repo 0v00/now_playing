@@ -46,3 +46,28 @@ def insert_showtimes(movie_id, times):
         cursor.execute("INSERT INTO showtimes (showtime_id, movie_id, times, valid_for) VALUES (?, ?, ?, ?)", (showtime_id, movie_id, time, today))
     conn.commit()
     conn.close()
+
+def get_movies_with_showtimes():
+    conn = sqlite3.connect("app/database/movies.db")
+    cursor = conn.cursor()
+
+    today = datetime.now().date().isoformat()
+
+    query = """
+    SELECT m.title, s.times
+    FROM movies m
+    INNER JOIN showtimes s ON m.movie_id = s.movie_id
+    WHERE s.valid_for = ?
+    """
+
+    cursor.execute(query, (today,))
+    rows = cursor.fetchall()
+    conn.close()
+
+    movies_data = {}
+    for title, time in rows:
+        if title not in movies_data:
+            movies_data[title] = {'times': []}
+        movies_data[title]['times'].append(time)
+
+    return movies_data
