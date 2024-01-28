@@ -3,10 +3,10 @@
     <head>
         <meta charset="UTF-8">
         <title>Now Playing</title>
-        <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+        <script src="https://unpkg.com/htmx.org@1.9.10?no-cache=1"></script>
         <link rel="stylesheet" href="/static/css/style.css">
     </head>
     <body>
-        <div id="movies-list" hx-get="/get-movies" hx-trigger="load" hx-swap="innerHTML" hx-poll="every 10m"></div>
+        <div id="movies-list" hx-get="/get-movies" hx-trigger="load" hx-swap="innerHTML"></div>
     </body>
 </html>
