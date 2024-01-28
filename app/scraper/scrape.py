@@ -1,7 +1,7 @@
 import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
-from .utils import clean_movie_title, movies_search, get_movie_genres_by_id, find_best_match
+from .utils import clean_movie_title, movies_search, get_movie_genres_by_id, get_movie_keywords, find_best_match
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -17,7 +17,7 @@ async def scrape_movie_titles_times(session, url):
         times = [span.text for span in li.select('a > span.Time')]
 
         if title not in movies_dict:
-            movies_dict[title] = {'times': [], 'genres': []}
+            movies_dict[title] = {'times': [], 'genres': [], 'keywords': []}
         movies_dict[title]['times'].extend(times)
 
     return movies_dict
@@ -39,9 +39,13 @@ async def process_movie(session, title, movies_dict):
         if best_match_object:
             movie_id = best_match_object.get('id')
             api_genres, _ = await get_movie_genres_by_id(session, movie_id)
+            api_keywords = await get_movie_keywords(session, movie_id)
 
             if api_genres:
                 movies_dict[clean_movie_title(title)]['genres'] = api_genres
+            
+            if api_keywords:
+                movies_dict[clean_movie_title(title)]['keywords'] = api_keywords
     else:
         print(f"no matching candidates found for {title}")
 
@@ -56,6 +60,6 @@ async def scrape_movies():
         await asyncio.gather(*(process_movie(session, title, movies_dict) for title in movies_dict.keys()))
 
     print(dict(filter(lambda movie: "Action" in movie[1]['genres'], movies_dict.items())))
-    print(movies_dict)
+    # print(movies_dict)
     print("scraper finished successfully")
     return movies_dict

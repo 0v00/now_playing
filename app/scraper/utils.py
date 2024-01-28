@@ -24,7 +24,7 @@ async def movies_search(session, movie_title):
         return None
     
 async def get_movie_genres_by_id(session, movie_id):
-    search_url = f"{tmdb_url}/3/movie/{movie_id}?api_key={api_key}&language=en-US"
+    search_url = f"{tmdb_url}/3/movie/{movie_id}?api_key={api_key}"
     try:
         async with session.get(search_url) as response:
             response.raise_for_status()
@@ -32,6 +32,18 @@ async def get_movie_genres_by_id(session, movie_id):
             genres = [genre['name'] for genre in data.get('genres', [])]
             title = data.get('title', 'Unknown')
             return genres, title
+    except aiohttp.ClientError as e:
+        print(f"an error occurred: {e}")
+        return None
+
+async def get_movie_keywords(session, movie_id):
+    search_url = f"{tmdb_url}/3/movie/{movie_id}/keywords?api_key={api_key}"
+    try:
+        async with session.get(search_url) as response:
+            response.raise_for_status()
+            data = await response.json()
+            keywords = [keyword['name'] for keyword in data.get('keywords', [])]
+            return keywords
     except aiohttp.ClientError as e:
         print(f"an error occurred: {e}")
         return None
@@ -75,10 +87,10 @@ def l_distance_dynamic(title1, title2):
 def find_best_match(title, candidates):
     best_match = None
     smallest_distance = float('inf')
-    title = title.lower()
+    title_lower = title.lower()
     for candidate in candidates:
-        candidate = candidate.lower()
-        if title == candidate:
+        candidate_lower = candidate.lower()
+        if title_lower == candidate_lower:
             best_match = candidate
             return best_match
         print(f"computing levenshtein distance for {title} and {candidate}")
