@@ -77,8 +77,8 @@ def find_best_match(title, candidates):
     smallest_distance = float('inf')
     title = title.lower()
     for candidate in candidates:
-        candidate_lower = candidate.lower()
-        if title == candidate_lower:
+        candidate = candidate.lower()
+        if title == candidate:
             best_match = candidate
             return best_match
         print(f"computing levenshtein distance for {title} and {candidate}")
