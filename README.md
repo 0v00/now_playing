@@ -15,7 +15,7 @@ Scraping today's movies from my local movie theatre so I can avoid any potential
 1. `python3 -m venv myvenv` and `source myvenv/bin/activate`
 2. `pip3 install -r requirements.txt`
 4. initialize the db: `python3 app/database/db_init.py`
-5. run the scraper: `python3 app/scraper/scrape.py`
+5. run the scrape module: `python3 -m app.scraper.scrape`
 4. start the server: `uvicorn app.main:app --reload`
 5. go to `http://localhost:8000/`
 
