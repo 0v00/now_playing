@@ -8,7 +8,6 @@ Scraping today's movies from my local movie theatre so I can avoid any potential
 - store movie info in an sqlite db
 - send HTML over the wire using Jinja2 for template rendering and HTMX for dynamic content updates
 - if a movie has already started, we add `line-through` styling to that showtime
-- a minimalist/neo-brutalist design style
 
 ## how to run
 
